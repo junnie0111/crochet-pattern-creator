@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crochet Pattern Creator</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const CrochetPatternCreator = () => {
+      // State variables
+      const [gridSize, setGridSize] = useState({ rows: 10, cols: 10 });
+      const [grid, setGrid] = useState([]);
+      const [selectedStitch, setSelectedStitch] = useState('sc');
+      const [patternName, setPatternName] = useState('My Crochet Pattern');
+      const [showInstructions, setShowInstructions] = useState(false);
+      const [terminology, setTerminology] = useState('us'); // Default to US terminology
+      const [selectionMode, setSelectionMode] = useState('cell'); // 'cell' or 'row'
+      
+      // Stitch types with their display properties - US terminology
+      const usStitchTypes = {
+        sc: { name: 'Single Crochet', color: '#3b82f6', symbol: 'sc' },
+        hdc: { name: 'Half Double Crochet', color: '#8b5cf6', symbol: 'hdc' },
+        dc: { name: 'Double Crochet', color: '#ec4899', symbol: 'dc' },
+        tc: { name: 'Triple Crochet', color: '#f97316', symbol: 'tc' },
+        bobble: { name: 'Bobble Stitch', color: '#84cc16', symbol: 'BO' },
+        ch: { name: 'Chain', color: '#6b7280', symbol: 'ch' },
+        blank: { name: 'No Stitch', color: '#f3f4f6', symbol: '' }
+      };
+      
+      // Stitch types with their display properties - UK terminology
+      const ukStitchTypes = {
+        sc: { name: 'Double Crochet', color: '#3b82f6', symbol: 'dc' },
+        hdc: { name: 'Half Treble Crochet', color: '#8b5cf6', symbol: 'htr' },
+        dc: { name: 'Treble Crochet', color: '#ec4899', symbol: 'tr' },
+        tc: { name: 'Double Treble Crochet', color: '#f97316', symbol: 'dtr' },
+        bobble: { name: 'Bobble Stitch', color: '#84cc16', symbol: 'BO' },
+        ch: { name: 'Chain', color: '#6b7280', symbol: 'ch' },
+        blank: { name: 'No Stitch', color: '#f3f4f6', symbol: '' }
+      };
+      
+      // Get the appropriate stitch types based on current terminology
+      const stitchTypes = terminology === 'us' ? usStitchTypes : ukStitchTypes;
+
+      // Initialize the grid when component loads or grid size changes
+      useEffect(() => {
+        initializeGrid();
+      }, [gridSize]);
+
+      // Function to initialize an empty grid
+      const initializeGrid = () => {
+        const newGrid = Array(gridSize.rows).fill().map(() => 
+          Array(gridSize.cols).fill('blank')
+        );
+        setGrid(newGrid);
+      };
+
+      // Handle cell clicks on the grid
+      const handleCellClick = (rowIndex, colIndex) => {
+        const newGrid = [...grid];
+        
+        if (selectionMode === 'cell') {
+          // Single cell mode
+          newGrid[rowIndex][colIndex] = selectedStitch;
+        } else if (selectionMode === 'row') {
+          // Entire row mode
+          newGrid[rowIndex] = newGrid[rowIndex].map(() => selectedStitch);
+        }
+        
+        setGrid(newGrid);
+      };
+
+      // Handle selecting row labels
+      const handleRowLabelClick = (rowIndex) => {
+        if (selectionMode === 'row') {
+          const newGrid = [...grid];
+          newGrid[rowIndex] = newGrid[rowIndex].map(() => selectedStitch);
+          setGrid(newGrid);
+        }
+      };
+
+      // Toggle selection mode between cell and row
+      const toggleSelectionMode = () => {
+        setSelectionMode(prevMode => prevMode === 'cell' ? 'row' : 'cell');
+      };
+
+      // Handle grid size changes
+      const handleSizeChange = (e) => {
+        const { name, value } = e.target;
+        setGridSize(prev => ({
+          ...prev,
+          [name]: parseInt(value) || 5 // Fallback to 5 if parsing fails
+        }));
+      };
+
+      // Clear the grid
+      const clearGrid = () => {
+        initializeGrid();
+      };
+
+      // Generate crochet instructions from the grid
+      const generateInstructions = () => {
+        let instructions = [];
+        
+        grid.forEach((row, rowIndex) => {
+          let currentRow = [];
+          let count = 1;
+          let prevStitch = row[0];
+          
+          for (let i = 1; i < row.length; i++) {
+            if (row[i] === prevStitch) {
+              count++;
+            } else {
+              if (prevStitch !== 'blank') {
+                currentRow.push(`${count} ${stitchTypes[prevStitch].name} (${stitchTypes[prevStitch].symbol})`);
+              }
+              count = 1;
+              prevStitch = row[i];
+            }
+          }
+          
+          // Add the last group
+          if (prevStitch !== 'blank') {
+            currentRow.push(`${count} ${stitchTypes[prevStitch].name} (${stitchTypes[prevStitch].symbol})`);
+          }
+          
+          if (currentRow.length > 0) {
+            instructions.push(`Row ${rowIndex + 1}: ${currentRow.join(', ')}`);
+          } else {
+            instructions.push(`Row ${rowIndex + 1}: No stitches`);
+          }
+        });
+        
+        return instructions;
+      };
+
+      return (
+        <div className="flex flex-col items-center p-4 max-w-6xl mx-auto">
+          <h1 className="text-3xl font-bold mb-4">{patternName}</h1>
+          
+          <div className="w-full mb-6">
+            {/* Pattern settings */}
+            <div className="flex flex-wrap gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Pattern Name:</label>
+                <input
+                  type="text"
+                  value={patternName}
+                  onChange={(e) => setPatternName(e.target.value)}
+                  className="p-2 border rounded w-64"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Rows:</label>
+                <input
+                  type="number"
+                  name="rows"
+                  value={gridSize.rows}
+                  onChange={handleSizeChange}
+                  min="5"
+                  max="20"
+                  className="p-2 border rounded w-20"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Columns:</label>
+                <input
+                  type="number"
+                  name="cols"
+                  value={gridSize.cols}
+                  onChange={handleSizeChange}
+                  min="5"
+                  max="20"
+                  className="p-2 border rounded w-20"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Terminology:</label>
+                <div className="flex gap-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name="terminology"
+                      value="us"
+                      checked={terminology === 'us'}
+                      onChange={(e) => setTerminology(e.target.value)}
+                      className="mr-2"
+                    />
+                    US Terms
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name="terminology"
+                      value="uk"
+                      checked={terminology === 'uk'}
+                      onChange={(e) => setTerminology(e.target.value)}
+                      className="mr-2"
+                    />
+                    UK Terms
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Selection Mode:</label>
+                <div className="flex gap-4">
+                  <button
+                    onClick={toggleSelectionMode}
+                    className={`px-4 py-2 rounded ${selectionMode === 'cell' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                  >
+                    Cell Mode
+                  </button>
+                  <button
+                    onClick={toggleSelectionMode}
+                    className={`px-4 py-2 rounded ${selectionMode === 'row' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                  >
+                    Row Mode
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Stitch selection buttons */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {Object.entries(stitchTypes).map(([key, { name, color, symbol }]) => (
+                <button
+                  key={key}
+                  onClick={() => setSelectedStitch(key)}
+                  className={`p-2 rounded text-white ${selectedStitch === key ? 'ring-2 ring-offset-2' : ''}`}
+                  style={{ backgroundColor: color }}
+                  title={name}
+                >
+                  {key !== 'blank' ? symbol : 'blank'}
+                </button>
+              ))}
+              
+              <button onClick={clearGrid} className="p-2 border rounded">
+                Clear
+              </button>
+            </div>
+
+            {/* Selection mode info */}
+            <div className="mb-6 p-2 rounded bg-blue-50 border border-blue-200">
+              <p className="text-sm text-blue-800">
+                <strong>Current Mode:</strong> {selectionMode === 'cell' ? 'Cell Selection' : 'Row Selection'} - 
+                {selectionMode === 'cell' ? ' Click individual cells to place stitches' : ' Click row numbers or any cell in a row to fill the entire row with the selected stitch'}
+              </p>
+            </div>
+          </div>
+          
+          {/* Pattern grid */}
+          {!showInstructions && (
+            <div className="border rounded p-4 mb-6 w-full overflow-auto">
+              <div className="flex justify-center">
+                <div className="inline-block">
+                  <div>
+                    {grid.map((row, rowIndex) => (
+                      <div key={rowIndex} className="flex">
+                        <div 
+                          className={`w-8 h-8 border flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200 ${selectionMode === 'row' ? 'font-bold' : ''}`}
+                          onClick={() => handleRowLabelClick(rowIndex)}
+                          title={selectionMode === 'row' ? "Click to fill entire row" : ""}
+                        >
+                          {rowIndex + 1}
+                        </div>
+                        {row.map((cell, colIndex) => (
+                          <div 
+                            key={`${rowIndex}-${colIndex}`}
+                            onClick={() => handleCellClick(rowIndex, colIndex)}
+                            className="w-8 h-8 border flex items-center justify-center cursor-pointer text-xs font-bold"
+                            style={{ backgroundColor: stitchTypes[cell].color }}
+                          >
+                            {stitchTypes[cell].symbol}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Action buttons */}
+          <div className="w-full mb-6 flex justify-center gap-4">
+            <button 
+              onClick={() => setShowInstructions(!showInstructions)}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              {showInstructions ? 'Edit Pattern' : 'Generate Instructions'}
+            </button>
+            
+            <button className="px-4 py-2 bg-green-600 text-white rounded">
+              Save Pattern
+            </button>
+            
+            <button className="px-4 py-2 bg-purple-600 text-white rounded">
+              Download PDF
+            </button>
+          </div>
+          
+          {/* Generated instructions */}
+          {showInstructions && (
+            <div className="w-full border rounded p-4">
+              <h2 className="text-xl font-bold mb-4">Pattern Instructions: {patternName}</h2>
+              
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">Terminology Used: {terminology === 'us' ? 'US' : 'UK'} Terms</h3>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">Materials Needed:</h3>
+                <ul className="list-disc pl-5">
+                  <li>Yarn (weight and color of your choice)</li>
+                  <li>Appropriate size crochet hook</li>
+                  <li>Scissors</li>
+                  <li>Yarn needle</li>
+                </ul>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">Abbreviations:</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {Object.entries(stitchTypes).filter(([key]) => key !== 'blank').map(([key, { name, symbol }]) => (
+                    <div key={key}>
+                      <span className="font-bold">{symbol}:</span> {name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Instructions:</h3>
+                {generateInstructions().length > 0 ? (
+                  <ol className="list-decimal pl-5">
+                    {generateInstructions().map((instruction, index) => (
+                      <li key={index} className="mb-1">{instruction}</li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p className="italic text-gray-500">No stitches have been added to the pattern yet.</p>
+                )}
+              </div>
+              
+              <div className="flex justify-center mt-6">
+                <p className="text-gray-500">
+                  Created with Crochet Pattern Creator
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<CrochetPatternCreator />, document.getElementById('root'));
+  </script>
+</body>
+</html>
