@@ -24,6 +24,137 @@
       const [showInstructions, setShowInstructions] = useState(false);
       const [terminology, setTerminology] = useState('us'); // Default to US terminology
       const [selectionMode, setSelectionMode] = useState('cell'); // 'cell' or 'row'
+
+      // Pattern library state variables
+      const [predefinedPatterns, setPredefinedPatterns] = useState({
+        outlines: {
+          name: 'Outlines',
+          patterns: [
+            {
+              name: 'Heart Outline',
+              grid: [
+                ['blank', 'sc', 'blank', 'blank', 'blank', 'sc', 'blank'],
+                ['sc', 'blank', 'sc', 'blank', 'sc', 'blank', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'blank', 'sc'],
+                ['blank', 'sc', 'blank', 'blank', 'blank', 'sc', 'blank'],
+                ['blank', 'blank', 'sc', 'blank', 'sc', 'blank', 'blank'],
+                ['blank', 'blank', 'blank', 'sc', 'blank', 'blank', 'blank']
+              ]
+            },
+            {
+              name: 'Teddy Outline',
+              grid: [
+                ['blank', 'sc', 'sc', 'blank', 'sc', 'sc', 'blank'],
+                ['sc', 'blank', 'blank', 'sc', 'blank', 'blank', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'blank', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'blank', 'sc'],
+                ['blank', 'sc', 'sc', 'sc', 'sc', 'sc', 'blank']
+              ]
+            },
+            {
+              name: 'Giraffe Outline',
+              grid: [
+                ['blank', 'sc', 'sc', 'blank', 'blank', 'blank', 'blank'],
+                ['blank', 'sc', 'blank', 'sc', 'blank', 'blank', 'blank'],
+                ['blank', 'sc', 'blank', 'sc', 'blank', 'blank', 'blank'],
+                ['blank', 'sc', 'blank', 'sc', 'blank', 'blank', 'blank'],
+                ['blank', 'sc', 'blank', 'blank', 'sc', 'blank', 'blank'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'sc', 'blank'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'sc', 'blank'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'sc', 'blank'],
+                ['blank', 'sc', 'sc', 'sc', 'sc', 'blank', 'blank']
+              ]
+            }
+          ]
+        },
+        shapes: {
+          name: 'Basic Shapes',
+          patterns: [
+            {
+              name: 'Circle',
+              grid: [
+                ['blank', 'blank', 'sc', 'sc', 'sc', 'blank', 'blank'],
+                ['blank', 'sc', 'blank', 'blank', 'blank', 'sc', 'blank'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'blank', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'blank', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'blank', 'sc'],
+                ['blank', 'sc', 'blank', 'blank', 'blank', 'sc', 'blank'],
+                ['blank', 'blank', 'sc', 'sc', 'sc', 'blank', 'blank']
+              ]
+            },
+            {
+              name: 'Square',
+              grid: [
+                ['sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc']
+              ]
+            },
+            {
+              name: 'Rectangle',
+              grid: [
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'blank', 'sc'],
+                ['sc', 'blank', 'blank', 'blank', 'blank', 'blank', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc']
+              ]
+            },
+            {
+              name: 'Triangle',
+              grid: [
+                ['blank', 'blank', 'blank', 'sc', 'blank', 'blank', 'blank'],
+                ['blank', 'blank', 'sc', 'blank', 'sc', 'blank', 'blank'],
+                ['blank', 'sc', 'blank', 'blank', 'blank', 'sc', 'blank'],
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc']
+              ]
+            }
+          ]
+        },
+        filledShapes: {
+          name: 'Filled Shapes',
+          patterns: [
+            {
+              name: 'Filled Circle',
+              grid: [
+                ['blank', 'blank', 'sc', 'sc', 'sc', 'blank', 'blank'],
+                ['blank', 'sc', 'sc', 'sc', 'sc', 'sc', 'blank'],
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc'],
+                ['blank', 'sc', 'sc', 'sc', 'sc', 'sc', 'blank'],
+                ['blank', 'blank', 'sc', 'sc', 'sc', 'blank', 'blank']
+              ]
+            },
+            {
+              name: 'Filled Square',
+              grid: [
+                ['sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc']
+              ]
+            },
+            {
+              name: 'Filled Rectangle',
+              grid: [
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc'],
+                ['sc', 'sc', 'sc', 'sc', 'sc', 'sc', 'sc']
+              ]
+            }
+          ]
+        }
+      });
+
+      const [activeCategory, setActiveCategory] = useState(null);
+      const [activePattern, setActivePattern] = useState(null);
+      const [showPatternLibrary, setShowPatternLibrary] = useState(false);
+      const [insertMode, setInsertMode] = useState(false);
+      const [selectedPattern, setSelectedPattern] = useState(null);
       
       // Stitch types with their display properties - US terminology
       const usStitchTypes = {
@@ -62,20 +193,28 @@
         );
         setGrid(newGrid);
       };
-
-      // Handle cell clicks on the grid
-      const handleCellClick = (rowIndex, colIndex) => {
-        const newGrid = [...grid];
-        
-        if (selectionMode === 'cell') {
-          // Single cell mode
-          newGrid[rowIndex][colIndex] = selectedStitch;
-        } else if (selectionMode === 'row') {
-          // Entire row mode
-          newGrid[rowIndex] = newGrid[rowIndex].map(() => selectedStitch);
+      
+      // Handle cell clicks on the grid with pattern insertion support
+      const handleGridClick = (rowIndex, colIndex) => {
+        if (insertMode && selectedPattern) {
+          // If in insert mode, place the selected pattern
+          applyPattern(selectedPattern, rowIndex, colIndex);
+          // Exit insert mode after placing
+          setInsertMode(false);
+        } else {
+          // Normal grid cell clicking
+          const newGrid = [...grid];
+          
+          if (selectionMode === 'cell') {
+            // Single cell mode
+            newGrid[rowIndex][colIndex] = selectedStitch;
+          } else if (selectionMode === 'row') {
+            // Entire row mode
+            newGrid[rowIndex] = newGrid[rowIndex].map(() => selectedStitch);
+          }
+          
+          setGrid(newGrid);
         }
-        
-        setGrid(newGrid);
       };
 
       // Handle selecting row labels
@@ -104,6 +243,33 @@
       // Clear the grid
       const clearGrid = () => {
         initializeGrid();
+      };
+      
+      // Apply a pattern to the grid
+      const applyPattern = (pattern, startRow = 0, startCol = 0) => {
+        // Create a copy of the current grid
+        const newGrid = [...grid];
+        
+        // Apply the pattern
+        pattern.grid.forEach((patternRow, rowIndex) => {
+          const targetRowIndex = startRow + rowIndex;
+          
+          // Skip if the row is outside of our grid
+          if (targetRowIndex >= gridSize.rows) return;
+          
+          patternRow.forEach((stitch, colIndex) => {
+            const targetColIndex = startCol + colIndex;
+            
+            // Skip if the column is outside of our grid
+            if (targetColIndex >= gridSize.cols) return;
+            
+            // Apply the stitch to our grid
+            newGrid[targetRowIndex][targetColIndex] = stitch;
+          });
+        });
+        
+        // Update the grid
+        setGrid(newGrid);
       };
 
       // Generate crochet instructions from the grid
@@ -140,6 +306,98 @@
         });
         
         return instructions;
+      };
+
+      // Render the pattern library UI
+      const renderPatternLibrary = () => (
+        <div className="border rounded p-4 mb-6 w-full bg-white">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">Pattern Library</h2>
+            <button 
+              onClick={() => setShowPatternLibrary(false)}
+              className="px-2 py-1 bg-gray-200 rounded"
+            >
+              Close Library
+            </button>
+          </div>
+          
+          <div className="flex gap-4 mb-4 flex-wrap">
+            {Object.keys(predefinedPatterns).map(categoryKey => (
+              <button
+                key={categoryKey}
+                onClick={() => setActiveCategory(categoryKey)}
+                className={`px-3 py-2 rounded ${activeCategory === categoryKey ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+              >
+                {predefinedPatterns[categoryKey].name}
+              </button>
+            ))}
+          </div>
+          
+          {activeCategory && (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {predefinedPatterns[activeCategory].patterns.map((pattern, index) => (
+                <div 
+                  key={index}
+                  className={`border rounded p-2 ${activePattern === index ? 'ring-2 ring-blue-500' : ''}`}
+                  onClick={() => {
+                    setActivePattern(index);
+                    setSelectedPattern(pattern);
+                  }}
+                >
+                  <h3 className="font-bold mb-2">{pattern.name}</h3>
+                  <div className="grid gap-px bg-gray-200 p-1">
+                    {pattern.grid.map((row, rowIndex) => (
+                      <div key={rowIndex} className="flex gap-px">
+                        {row.map((cell, colIndex) => (
+                          <div
+                            key={`${rowIndex}-${colIndex}`}
+                            className="w-4 h-4"
+                            style={{ backgroundColor: stitchTypes[cell].color }}
+                          ></div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-2 flex justify-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedPattern(pattern);
+                        setInsertMode(true);
+                        setShowPatternLibrary(false);
+                      }}
+                      className="px-2 py-1 bg-green-500 text-white text-xs rounded"
+                    >
+                      Insert
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+
+      // Render insert mode status indicator
+      const renderInsertModeStatus = () => {
+        if (!insertMode || !selectedPattern) return null;
+        
+        return (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded flex items-center justify-between">
+            <div>
+              <p className="font-bold text-green-800">Insert Mode Active</p>
+              <p className="text-sm text-green-700">
+                Click anywhere on the grid to place "{selectedPattern.name}"
+              </p>
+            </div>
+            <button
+              onClick={() => setInsertMode(false)}
+              className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        );
       };
 
       return (
@@ -260,6 +518,12 @@
             </div>
           </div>
           
+          {/* Insert mode status indicator */}
+          {renderInsertModeStatus()}
+          
+          {/* Pattern library */}
+          {showPatternLibrary && renderPatternLibrary()}
+          
           {/* Pattern grid */}
           {!showInstructions && (
             <div className="border rounded p-4 mb-6 w-full overflow-auto">
@@ -278,7 +542,7 @@
                         {row.map((cell, colIndex) => (
                           <div 
                             key={`${rowIndex}-${colIndex}`}
-                            onClick={() => handleCellClick(rowIndex, colIndex)}
+                            onClick={() => handleGridClick(rowIndex, colIndex)}
                             className="w-8 h-8 border flex items-center justify-center cursor-pointer text-xs font-bold"
                             style={{ backgroundColor: stitchTypes[cell].color }}
                           >
@@ -294,7 +558,7 @@
           )}
           
           {/* Action buttons */}
-          <div className="w-full mb-6 flex justify-center gap-4">
+          <div className="w-full mb-6 flex justify-center gap-4 flex-wrap">
             <button 
               onClick={() => setShowInstructions(!showInstructions)}
               className="px-4 py-2 bg-blue-600 text-white rounded"
@@ -308,6 +572,14 @@
             
             <button className="px-4 py-2 bg-purple-600 text-white rounded">
               Download PDF
+            </button>
+
+            {/* Pattern Library button */}
+            <button 
+              onClick={() => setShowPatternLibrary(true)}
+              className="px-4 py-2 bg-indigo-600 text-white rounded"
+            >
+              Pattern Library
             </button>
           </div>
           
