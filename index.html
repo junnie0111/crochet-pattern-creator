@@ -17,7 +17,7 @@
 
     const CrochetPatternCreator = () => {
       // State variables
-      const [gridSize, setGridSize] = useState({ rows: 10, cols: 10 });
+      const [gridSize, setGridSize] = useState({ rows: 30, cols: 30 });
       const [grid, setGrid] = useState([]);
       const [selectedStitch, setSelectedStitch] = useState('sc');
       const [patternName, setPatternName] = useState('My Crochet Pattern');
@@ -167,7 +167,7 @@
                   value={gridSize.rows}
                   onChange={handleSizeChange}
                   min="5"
-                  max="20"
+                  max="100"
                   className="p-2 border rounded w-20"
                 />
               </div>
@@ -180,7 +180,7 @@
                   value={gridSize.cols}
                   onChange={handleSizeChange}
                   min="5"
-                  max="20"
+                  max="100"
                   className="p-2 border rounded w-20"
                 />
               </div>
